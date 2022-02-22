@@ -9,13 +9,8 @@ window.onload=()=>{
                 "mensaje": msg
             }));
         ajax.onload=()=>{
-            msg="";
-            datos=JSON.parse(ajax.responseText);
-            for (let index = 0; index < datos.length; index++) {
-                const mensaje = datos[index];
-                msg+=`<p><span>${mensaje.time}:  </span><span>${mensaje.usuario}: </span><span>${mensaje.mensaje}</span></p>`
-            }
-            document.getElementById("mensajes").innerHTML=msg;
+            mostrarContenido(JSON.parse(ajax.responseText))
+            
         }
     }
 
@@ -26,12 +21,20 @@ window.onload=()=>{
         ajax.onload=()=>{
             msg="";
             datos=JSON.parse(ajax.responseText);
-            for (let index = 0; index < datos.length; index++) {
-                const mensaje = datos[index];
-                msg+=`<p><span>${mensaje.time}:  </span><span>${mensaje.usuario}: </span><span>${mensaje.mensaje}</span></p>`
-            }
-            document.getElementById("mensajes").innerHTML=msg;
+            mostrarContenido(datos);
         }
     },1000)
 
+    function mostrarContenido(datos){
+        msg="";
+        
+        for (let index = 0; index < datos.length; index++) {
+            const mensaje = datos[index];
+            msg+=`${mensaje.time}:  ${mensaje.usuario}: ${mensaje.mensaje}\n`
+        }
+        document.getElementById("mensajes").innerHTML=msg;
+        document.getElementById("mensajes").scrollTop=document.getElementById("mensajes").scrollHeight
+
+    }
 }
+
