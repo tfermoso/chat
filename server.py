@@ -1,10 +1,13 @@
 
+import re
 from flask import Flask,redirect,url_for,make_response
 from flask import render_template
 from flask import request,session,jsonify
 import os
 import pathlib
 import json
+import funciones as func
+from datetime import datetime
 
 # creates a Flask application, named app
 app = Flask(__name__,static_folder='templates/static')
@@ -25,11 +28,20 @@ def chat():
     else:
         return redirect(url_for("login"));
 
-@app.route("/apimsg",methods=["POST"])
+@app.route("/apimsg",methods=["POST","GET"])
 def api():
-    mensaje=request.get_json()
-    print(session["usuario"],mensaje["mensaje"]);
-    return session["usuario"] +": " +mensaje["mensaje"];
+    if(request.method=="POST"):
+        mensaje=request.get_json()
+        datos={
+            "usuario":session["usuario"],
+            "mensaje":mensaje["mensaje"],
+            "time": datetime.now().strftime("%d-%m-%y %H:%M:%S:")
+        }
+        data=func.guardarMensaje(datos)
+        return jsonify(data);
+    else:
+        datos=func.leerMensajes();
+        return jsonify(datos);
 
 # run the application
 if __name__ == "__main__":
